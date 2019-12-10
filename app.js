@@ -11,7 +11,8 @@ const bcrypt = require("bcrypt");
 const passport = require("passport");
 const User = require("./models/User")
 const LocalStrategy = require("passport-local").Strategy;
-const flash = require("connect-flash");
+const expressValidator = require('express-validator')
+
 
 mongoose
   .connect('mongodb://localhost/provi', {
@@ -36,12 +37,12 @@ app.use(bodyParser.urlencoded({
   extended: false
 }));
 app.use(cookieParser());
-
 app.use(session({
   secret: "our-passport-local-strategy-app",
   resave: true,
   saveUninitialized: true
 }));
+
 
 passport.serializeUser((user, cb) => {
   cb(null, user._id);
@@ -56,7 +57,6 @@ passport.deserializeUser((id, cb) => {
   });
 });
 
-app.use(flash());
 passport.use(new LocalStrategy({
   passReqToCallback: true
 }, (req, email, password, next) => {
@@ -83,14 +83,12 @@ passport.use(new LocalStrategy({
 
 app.use(passport.initialize());
 app.use(passport.session());
-
-
-
+app.use(expressValidator({}));
 
 const index = require('./routes/index');
 const user = require('./routes/user');
 app.use('/api/V1', index);
-app.use('/api/V1/user/', index);
+app.use('/api/V1/user', user);
 
 
 module.exports = app;
