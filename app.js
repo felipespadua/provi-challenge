@@ -6,11 +6,6 @@ const express = require('express');
 const mongoose = require('mongoose');
 const logger = require('morgan');
 const path = require('path');
-const session = require("express-session");
-const bcrypt = require("bcrypt");
-const passport = require("passport");
-const User = require("./models/User")
-const LocalStrategy = require("passport-local").Strategy;
 const expressValidator = require('express-validator')
 
 
@@ -37,52 +32,9 @@ app.use(bodyParser.urlencoded({
   extended: false
 }));
 app.use(cookieParser());
-app.use(session({
-  secret: "our-passport-local-strategy-app",
-  resave: true,
-  saveUninitialized: true
-}));
 
 
-passport.serializeUser((user, cb) => {
-  cb(null, user._id);
-});
 
-passport.deserializeUser((id, cb) => {
-  User.findById(id, (err, user) => {
-    if (err) {
-      return cb(err);
-    }
-    cb(null, user);
-  });
-});
-
-passport.use(new LocalStrategy({
-  passReqToCallback: true
-}, (req, email, password, next) => {
-  User.findOne({
-    email
-  }, (err, user) => {
-    if (err) {
-      return next(err);
-    }
-    if (!user) {
-      return next(null, false, {
-        message: "Incorrect username"
-      });
-    }
-    if (!bcrypt.compareSync(password, user.password)) {
-      return next(null, false, {
-        message: "Incorrect password"
-      });
-    }
-
-    return next(null, user);
-  });
-}));
-
-app.use(passport.initialize());
-app.use(passport.session());
 app.use(expressValidator({}));
 
 const index = require('./routes/index');

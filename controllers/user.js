@@ -69,12 +69,6 @@ exports.register_cpf = function (req, res) {
   }
   User.findById(req.userId)
     .then(user => {
-      // console.log(user.isValidOrder("cpf"))
-      // if(!user.isValidOrder("cpf")){
-      //   console.log("AAAAAAA")
-      //   res.json(400).json({ success: false, message: "Incorrect path order"})
-      //   return
-      // } 
       user.upsert("cpf", data)
         .then(user => {
           res.status(200).json({ success: true, next_end_point: "full-name"})
@@ -99,7 +93,7 @@ exports.register_full_name = function (req, res) {
   }
   User.findById(req.userId)
     .then(user => {
-      user.upsertName(data)
+      user.upsertName(data, "full-name")
         .then(user => {
           res.status(200).json({ success: true, next_end_point: "birthday"})
         })
@@ -123,7 +117,7 @@ exports.register_birthday = function (req, res) {
   }
   User.findById(req.userId)
     .then(user => {
-      user.upsertBirthday(data)
+      user.upsertBirthday(data, "birthday")
         .then(user => {
           res.status(200).json({ success: true, next_end_point: "phone-number"})
         })
@@ -147,7 +141,7 @@ exports.register_phone_number = function (req, res) {
   }
   User.findById(req.userId)
     .then(user => {
-      user.upsert("phoneNumber", data)
+      user.upsert("phoneNumber", data, "phone-number")
         .then(user => {
           res.status(200).json({ success: true, next_end_point: "address"})
         })
@@ -171,7 +165,7 @@ exports.register_address = function (req, res) {
   }
   User.findById(req.userId)
     .then(user => {
-      user.upsertAddress(data)
+      user.upsertAddress(data, "address")
         .then(response => {
           res.status(200).json({ success: true, next_end_point: "amount-requested"})
         })
@@ -195,7 +189,7 @@ exports.register_amount_requested = function (req, res) {
   }
   User.findById(req.userId)
     .then(user => {
-      user.upsert("amountRequested", data)
+      user.upsert("amountRequested", data, "amount-requested")
         .then(response => {
           res.status(200).json({success: true})
         })

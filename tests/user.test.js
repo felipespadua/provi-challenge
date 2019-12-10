@@ -28,16 +28,6 @@ describe('Register User', () => {
 });
 
 describe('Register Users CPF', () => {
-  it('Succeeds with correct data and token', async () => {
-    const demoData = {
-      data: "43306027847",
-      token: global.token
-    }
-    const response = await post(`/api/V1/user/cpf`, demoData)
-      .expect(200);
-    expect(response.body.success).toBeTruthy();
-    expect(response.body.next_end_point).toBe("full-name");
-  });
   it('Fails without token', async () => {
     const demoData = {
       data: "43306027847"
@@ -74,19 +64,19 @@ describe('Register Users CPF', () => {
       .expect(422);
     expect(response.body).toHaveProperty("errors")
   });
+  it('Succeeds with correct data and token', async () => {
+    const demoData = {
+      data: "43306027847",
+      token: global.token
+    }
+    const response = await post(`/api/V1/user/cpf`, demoData)
+      .expect(200);
+    expect(response.body.success).toBeTruthy();
+    expect(response.body.next_end_point).toBe("full-name");
+  });
 });
 
 describe('Register Users Full Name', () => {
-  it('Succeeds with correct data and token', async () => {
-    const demoData = {
-      data: "Felipe Sekkar",
-      token: global.token
-    }
-    const response = await post(`/api/V1/user/full-name`, demoData)
-      .expect(200);
-    expect(response.body.success).toBeTruthy();
-    expect(response.body.next_end_point).toBe("birthday");
-  });
   it('Fails without token', async () => {
     const demoData = {
       data: "Felipe Sekkar"
@@ -123,19 +113,19 @@ describe('Register Users Full Name', () => {
       .expect(422);
     expect(response.body).toHaveProperty("errors")
   });
+  it('Succeeds with correct data and token', async () => {
+    const demoData = {
+      data: "Felipe Sekkar",
+      token: global.token
+    }
+    const response = await post(`/api/V1/user/full-name`, demoData)
+      .expect(200);
+    expect(response.body.success).toBeTruthy();
+    expect(response.body.next_end_point).toBe("birthday");
+  });
 });
 
 describe('Register Users Birthday', () => {
-  it('Succeeds with correct data and token', async () => {
-    const demoData = {
-      data: "1995-04-21",
-      token: global.token
-    }
-    const response = await post(`/api/V1/user/birthday`, demoData)
-      .expect(200);
-    expect(response.body.success).toBeTruthy();
-    expect(response.body.next_end_point).toBe("phone-number");
-  });
   it('Fails without token', async () => {
     const demoData = {
       data: "1995-04-21"
@@ -172,19 +162,19 @@ describe('Register Users Birthday', () => {
       .expect(422);
     expect(response.body).toHaveProperty("errors")
   });
+  it('Succeeds with correct data and token', async () => {
+    const demoData = {
+      data: "1995-04-21",
+      token: global.token
+    }
+    const response = await post(`/api/V1/user/birthday`, demoData)
+      .expect(200);
+    expect(response.body.success).toBeTruthy();
+    expect(response.body.next_end_point).toBe("phone-number");
+  });
 });
 
 describe('Register Users Phone Number', () => {
-  it('Succeeds with correct data and token', async () => {
-    const demoData = {
-      data: "(11)98252-6247",
-      token: global.token
-    }
-    const response = await post(`/api/V1/user/phone-number`, demoData)
-      .expect(200);
-    expect(response.body.success).toBeTruthy();
-    expect(response.body.next_end_point).toBe("address");
-  });
   it('Fails without token', async () => {
     const demoData = {
       data: "(11)98252-6247"
@@ -221,26 +211,19 @@ describe('Register Users Phone Number', () => {
       .expect(422);
     expect(response.body).toHaveProperty("errors")
   });
+  it('Succeeds with correct data and token', async () => {
+    const demoData = {
+      data: "(11)98252-6247",
+      token: global.token
+    }
+    const response = await post(`/api/V1/user/phone-number`, demoData)
+      .expect(200);
+    expect(response.body.success).toBeTruthy();
+    expect(response.body.next_end_point).toBe("address");
+  });
 });
 
 describe('Register Users Address', () => {
-  it('Succeeds with correct data and token', async () => {
-    const demoData = {
-      data: {
-        "cep": "01333000",
-        "street": "Rua São Carlos do Pinhal",
-        "number": 311,
-        "complement": "Apartamento 32",
-        "city": "São Paulo",
-        "state": "SP"
-      },
-      token: global.token
-    }
-    const response = await post(`/api/V1/user/address`, demoData)
-      .expect(200);
-    expect(response.body.success).toBeTruthy();
-    expect(response.body.next_end_point).toBe("amount-requested");
-  });
   it('Fails without token', async () => {
     const demoData = {
       data: {
@@ -298,18 +281,26 @@ describe('Register Users Address', () => {
       .expect(422);
     expect(response.body).toHaveProperty("errors")
   });
+  it('Succeeds with correct data and token', async () => {
+    const demoData = {
+      data: {
+        "cep": "01333000",
+        "street": "Rua São Carlos do Pinhal",
+        "number": 311,
+        "complement": "Apartamento 32",
+        "city": "São Paulo",
+        "state": "SP"
+      },
+      token: global.token
+    }
+    const response = await post(`/api/V1/user/address`, demoData)
+      .expect(200);
+    expect(response.body.success).toBeTruthy();
+    expect(response.body.next_end_point).toBe("amount-requested");
+  });
 });
 
 describe('Register Users Amount Requested', () => {
-  it('Succeeds with correct data and token', async () => {
-    const demoData = {
-      data: 1000000,
-      token: global.token
-    }
-    const response = await post(`/api/V1/user/amount-requested`, demoData)
-      .expect(200);
-    expect(response.body.success).toBeTruthy();
-  });
   it('Fails without token', async () => {
     const demoData = {
       data: 1000000
@@ -346,7 +337,18 @@ describe('Register Users Amount Requested', () => {
       .expect(422);
     expect(response.body).toHaveProperty("errors")
   });
+  it('Succeeds with correct data and token', async () => {
+    const demoData = {
+      data: 1000000,
+      token: global.token
+    }
+    const response = await post(`/api/V1/user/amount-requested`, demoData)
+      .expect(200);
+    expect(response.body.success).toBeTruthy();
+  });
 });
+
+
 function post(url, body) {
   const httpRequest = request(app).post(url);
   httpRequest.send(body);
