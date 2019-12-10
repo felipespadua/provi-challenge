@@ -197,7 +197,7 @@ exports.register_amount_requested = function (req, res) {
     .then(user => {
       user.upsert("amountRequested", data)
         .then(response => {
-          res.status(200).json(response)
+          res.status(200).json({success: true})
         })
         .catch(err => {
           res.status(400).json(err);

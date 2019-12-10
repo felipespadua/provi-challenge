@@ -1,6 +1,6 @@
 const request = require('supertest');
-const app = require('./app'); // our Node application
-const User = require("./models/User")
+const app = require('../app'); // our Node application
+const User = require("../models/User")
 
 User.collection.drop()
 
@@ -300,6 +300,53 @@ describe('Register Users Address', () => {
   });
 });
 
+describe('Register Users Amount Requested', () => {
+  it('Succeeds with correct data and token', async () => {
+    const demoData = {
+      data: 1000000,
+      token: global.token
+    }
+    const response = await post(`/api/V1/user/amount-requested`, demoData)
+      .expect(200);
+    expect(response.body.success).toBeTruthy();
+  });
+  it('Fails without token', async () => {
+    const demoData = {
+      data: 1000000
+    }
+    const response = await post(`/api/V1/user/amount-requested`, demoData)
+      .expect(401);
+    expect(response.body.auth).toBeFalsy();
+    expect(response.body.message).toBe('No token provided.');
+  });
+  it('Fails with incorrect token', async () => {
+    const demoData = {
+      data: 1000000,
+      token: "Dnafdamkfedfw3e223rewfsf"
+    }
+    const response = await post(`/api/V1/user/amount-requested`, demoData)
+      .expect(500);
+    expect(response.body.auth).toBeFalsy();
+    expect(response.body.message).toBe('Failed to authenticate token.');
+  });
+  it('Fails with incorrect data', async () => {
+    const demoData = {
+      tel: 1000000,
+      token: global.token
+    }
+    const response = await post(`/api/V1/user/amount-requested`, demoData)
+      .expect(422);
+    expect(response.body).toHaveProperty("errors")
+  });
+  it('Fails without data', async () => {
+    const demoData = {
+      token: global.token
+    }
+    const response = await post(`/api/V1/user/amount-requested`, demoData)
+      .expect(422);
+    expect(response.body).toHaveProperty("errors")
+  });
+});
 function post(url, body) {
   const httpRequest = request(app).post(url);
   httpRequest.send(body);

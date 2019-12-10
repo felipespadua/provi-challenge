@@ -91,9 +91,11 @@ const userSchema = new Schema({
       required: true
     }
   }],
-  amountRequested: {
-    type: Number
-  },
+  amountRequested: [{
+    data: {
+      type: Number
+    }
+  }],
   lastUpdated: {
     type: String
   },
@@ -106,7 +108,7 @@ const userSchema = new Schema({
   timestamps: true
 });
 
-userSchema.methods.upsert = function upsert(field, data, path) {
+userSchema.methods.upsert = function upsert(field, data) {
   let user = this
   let index = user[field].findIndex(el => el.data === data)
   user.lastUpdated = field
@@ -129,6 +131,7 @@ userSchema.methods.upsertName = function upsertName(data) {
     firstName: splittedName[0],
     lastName: splittedName[1]
   }
+  user.lastUpdated = "fullName"
   let index = user.fullName.findIndex(el => el.data.firstName === newData.firstName && el.data.lastName === newData.lastName)
   if (index === -1) {
     user.fullName.push({
@@ -144,6 +147,7 @@ userSchema.methods.upsertName = function upsertName(data) {
 
 userSchema.methods.upsertBirthday = function upsertBirthday(data) {
   let user = this
+  user.lastUpdated = "birthday"
   let index = user.birthday.findIndex(el => new Date(el.data).getTime() === new Date(data).getTime())
   if (index === -1) {
     user.birthday.push({
@@ -175,6 +179,7 @@ userSchema.methods.upsertAddress = function upsertAddress(data) {
     city,
     state
   }
+  user.lastUpdated = "address"
   let index = user.address.findIndex(el => {
     return el.data.cep === cep && el.data.street === street && el.data.number === number && el.data.complement === complement && el.data.city === city && el.data.state === state
   })
@@ -193,11 +198,11 @@ userSchema.methods.upsertAddress = function upsertAddress(data) {
 userSchema.methods.isValidOrder = async function isValidOrder(field) {
   let user = this
   let path = await Path.find()
-  
+
   let index = path[0].order.findIndex(el => el === field)
-  
-  if(path[index - 1] === null || path[index - 1] === user.lastUpdated ){
-    
+
+  if (path[index - 1] === null || path[index - 1] === user.lastUpdated) {
+
     return true
   }
   return false
