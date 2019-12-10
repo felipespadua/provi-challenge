@@ -1,8 +1,15 @@
 const request = require('supertest');
-const app = require('../app'); // our Node application
+const app = require('../app'); 
 const User = require("../models/User")
+const Path = require("../models/Path")
 
 User.collection.drop()
+Path.collection.drop()
+
+let path = new Path({
+  order: ["cpf","full-name","birthday","phone-number","address","amount-requested"]
+})
+path.save()
 
 describe('Register User', () => {
   it('Succeeds with email and password', async () => {
@@ -348,6 +355,39 @@ describe('Register Users Amount Requested', () => {
   });
 });
 
+describe('Register User Wrong Order', () => {
+  it('Succeeds with email and password', async () => {
+    const demoUser = {
+      email: "felipespadua@gmail.com",
+      password: "67890"
+    }
+    const response = await post(`/api/V1/user/signup`, demoUser)
+      .expect(200);
+    expect(response.body.auth).toBeTruthy();
+    expect(response.body.token).not.toBeNull();
+    global.token = response.body.token
+  });
+  it('Phone Number: correct data and token but incorrect order', async () => {
+    const demoData = {
+      data: "(11)98252-6247",
+      token: global.token
+    }
+    const response = await post(`/api/V1/user/phone-number`, demoData)
+      .expect(400);
+    expect(response.body.success).toBeFalsy();
+    expect(response.body.message).toBe("Incorrect order, next_end_point: cpf");
+  });
+  it('Succeeds with correct order, data and token', async () => {
+    const demoData = {
+      data: "02236532091",
+      token: global.token
+    }
+    const response = await post(`/api/V1/user/cpf`, demoData)
+      .expect(200);
+    expect(response.body.success).toBeTruthy();
+    expect(response.body.next_end_point).toBe("full-name");
+  });
+});
 
 function post(url, body) {
   const httpRequest = request(app).post(url);
