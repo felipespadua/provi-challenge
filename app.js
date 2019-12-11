@@ -10,7 +10,7 @@ const expressValidator = require('express-validator')
 
 
 mongoose
-  .connect('mongodb://localhost/provi', {
+  .connect(process.env.MONGODB_URI, {
     useNewUrlParser: true
   })
   .then(x => {
